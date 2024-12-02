@@ -1,5 +1,6 @@
 # [💾 Download script](https://github.com/ILikeLight/Bundle-ID-Finder/blob/main/Bundle%20id%20generator.cmd)
 
+# This makes it so that it can be run with the .cmd extension instead of .ps1
     <# : batch script
     @echo off
     setlocal
