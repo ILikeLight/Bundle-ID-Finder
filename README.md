@@ -1,3 +1,5 @@
+[💾 Download script!]([https://example.com/download](https://github.com/ILikeLight/Bundle-ID-Finder/blob/main/Bundle%20id%20generator.cmd))
+
     <# : batch script
     @echo off
     setlocal
