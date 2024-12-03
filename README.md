@@ -1,4 +1,4 @@
-# [💾 Download script](https://github.com/ILikeLight/Bundle-ID-Finder/blob/main/Bundle%20ID%20Finder.cmd)
+# [💾 Download script](https://github.com/ILikeLight/Bundle-ID-Finder/archive/refs/heads/main.zip)
 
 # This makes it so that it can be run with the .cmd extension instead of .ps1
     <# : batch script
