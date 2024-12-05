@@ -59,9 +59,7 @@ switch ($choice) {
             $logEntry = "Time: $(Get-Date) | Input: $sourceUrl | Generated URL: $lookupUrl | bundleId: $bundleId"
             Add-Content -Path $logFilePath -Value $logEntry
             Write-Output "History saved to: $logFilePath"
-
-            # Open the downloaded file in an editor
-            Start-Process $outputPath
+            
         } else {
             Write-Output "Could not find a valid ID in the entered URL."
         }
