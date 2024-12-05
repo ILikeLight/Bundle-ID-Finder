@@ -1,5 +1,5 @@
 # [💾 Download script](https://github.com/ILikeLight/Bundle-ID-Finder/archive/refs/heads/main.zip)
-
+```
 # This makes it so that it can be run with the .cmd (batch file) extension instead of .ps1 (powershell script)
 <# : batch script
 @echo off
@@ -94,3 +94,4 @@ Write-Host "Script execution complete. Press any key to exit." -ForegroundColor 
 pause
 
 # Made by Chris or SUxpa2VMaWdodCBvbiBHaXRodWI= <-- Base64 :D
+```
