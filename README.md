@@ -1,57 +1,96 @@
 # [💾 Download script](https://github.com/ILikeLight/Bundle-ID-Finder/archive/refs/heads/main.zip)
 
-# This makes it so that it can be run with the .cmd extension instead of .ps1
-    <# : batch script
-    @echo off
-    setlocal
-    cd %~dp0
-    powershell -executionpolicy remotesigned -Command "Invoke-Expression $([System.IO.File]::ReadAllText('%~f0'))"
-    endlocal
-    goto:eof
-    #>
+# This makes it so that it can be run with the .cmd (batch file) extension instead of .ps1 (powershell script)
+<# : batch script
+@echo off
+setlocal
+cd %~dp0
+powershell -executionpolicy remotesigned -Command "Invoke-Expression $([System.IO.File]::ReadAllText('%~f0'))"
+endlocal
+goto:eof
+#>
 
 # Past this point its only Powershell code
 
-# Force TLS 1.2 To make a connection to a modern server
-    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+# Force TLS 1.2 to work with modern servers
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
-# Ask user to input a url
-    $sourceUrl = Read-Host "Input Source URL (Example: https://apps.apple.com/nl/app/safari/id1146562112)"
-    $lookupUrlBase = "https://itunes.apple.com/lookup?id="
+# Path to the log file to keep a history
+$logFilePath = Join-Path $env:USERPROFILE "Downloads\script_history.log"
 
-# Extract the last 9 or 10 numbers from the url
-    if ($sourceUrl -match "id(\d{9,10})") {
-    $appId = $matches[1] # The ID gets taken from this
-    # Combine with the lookup-URL
-    $lookupUrl = $lookupUrlBase + $appId
-    Write-Output "Generated Lookup URL: $lookupUrl"
-    
-# Download the file
-    $outputPath = Join-Path $env:USERPROFILE "Downloads\lookup_result.txt"
-    Invoke-WebRequest -Uri $lookupUrl -OutFile $outputPath
-    Write-Output "File Downloaded to: $outputPath"
+# Display options: View history or clear history
+Write-Output "Options:"
+Write-Output "1. Enter a new URL."
+Write-Output "2. View history."
+Write-Output "3. Clear history."
+$choice = Read-Host "Choose an option (1, 2, or 3)"
 
- # Read the contents of the file
-    $fileContent = Get-Content $outputPath -Raw
+switch ($choice) {
+    1 {
+        # Prompt the user to enter a source URL
+        $sourceUrl = Read-Host "Enter the source URL (e.g., https://apps.apple.com/nl/app/safari/id1146562112)"
+        $lookupUrlBase = "https://itunes.apple.com/lookup?id="
 
- # Search for the value "bundleId"
-    if ($fileContent -match '"bundleId":"([^"]+)"') {
-        $bundleId = $matches[1]
-        Write-Output "Found bundleId: $bundleId"
-    } else {
-        Write-Output "Could not find a bundleID in the file."
-	# Pauze to keep window open
-        Read-Host "Press ENTER to close the window"
+        # Extract the last 9 or 10 digits from the entered URL
+        if ($sourceUrl -match "id(\d{9,10})") {
+            $appId = $matches[1] # Extracted ID
+            # Combine with the lookup URL base
+            $lookupUrl = $lookupUrlBase + $appId
+            Write-Output "Generated Lookup URL: $lookupUrl"
+            
+            # Download the file
+            $outputPath = Join-Path $env:USERPROFILE "Downloads\lookup_result.json"  # Choose a suitable filename
+            Invoke-WebRequest -Uri $lookupUrl -OutFile $outputPath
+            Write-Output "File downloaded to: $outputPath"
+
+            # Read the file content
+            $fileContent = Get-Content $outputPath -Raw
+
+            # Search for the "bundleId" value
+            if ($fileContent -match '"bundleId":"([^"]+)"') {
+                $bundleId = $matches[1]
+                Write-Output "Found bundleId: $bundleId"
+            } else {
+                $bundleId = "Could not find bundleId."
+                Write-Output $bundleId
+            }
+
+            # Log the input and output to the history file
+            $logEntry = "Time: $(Get-Date) | Input: $sourceUrl | Generated URL: $lookupUrl | bundleId: $bundleId"
+            Add-Content -Path $logFilePath -Value $logEntry
+            Write-Output "History saved to: $logFilePath"
+
+            # Open the downloaded file in an editor
+            Start-Process $outputPath
+        } else {
+            Write-Output "Could not find a valid ID in the entered URL."
+        }
     }
-    
-    } else {
-    Write-Output "Could not find a valid id in the enterd url."
-	# Pauze to keep window open
-    Read-Host "Press ENTER to close the window"
+    2 {
+        # View history
+        if (Test-Path $logFilePath) {
+            Write-Output "History:"
+            Get-Content $logFilePath
+        } else {
+            Write-Output "No history available."
+        }
     }
+    3 {
+        # Clear history
+        if (Test-Path $logFilePath) {
+            Remove-Item $logFilePath -Force
+            Write-Output "History has been cleared."
+        } else {
+            Write-Output "No history to clear."
+        }
+    }
+    default {
+        Write-Output "Invalid choice. Please restart the script and try again."
+    }
+}
 
-# Pauze to keep window open
-    Read-Host "Press ENTER to close the window"
-
+# Pause to keep the window open
+Write-Host "Script execution complete. Press any key to exit." -ForegroundColor Yellow
+pause
 
 # Made by Chris or SUxpa2VMaWdodCBvbiBHaXRodWI= <-- Base64 :D
