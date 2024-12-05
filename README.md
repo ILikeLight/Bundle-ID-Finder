@@ -39,7 +39,7 @@ switch ($choice) {
             Write-Output "Generated Lookup URL: $lookupUrl"
             
             # Download the file
-            $outputPath = Join-Path $env:USERPROFILE "Downloads\lookup_result.json"  # Choose a suitable filename
+            $outputPath = Join-Path $env:USERPROFILE "Downloads\lookup_result.txt"
             Invoke-WebRequest -Uri $lookupUrl -OutFile $outputPath
             Write-Output "File downloaded to: $outputPath"
 
