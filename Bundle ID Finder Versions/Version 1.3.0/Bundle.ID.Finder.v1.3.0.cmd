@@ -15,7 +15,7 @@ goto:eof
 .AUTHOR
     ILikeLight
 .VERSION
-    1.2.4
+    1.3.0
 #>
 
 # Function to display fancy banner
